@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alphabet Challenge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;500;700;800;900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212; /* Darker background for a sleek look */
+            color: #E0E0E0; /* Light gray text for readability */
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .card {
+            background-color: #1E1E1E; /* Dark card color */
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); /* Stronger, modern shadow */
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #333;
+        }
+        h1 {
+            font-family: 'Bungee', cursive;
+            color: #e94560; /* Vibrant red-pink accent */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        h2, h3 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            color: #e94560;
+        }
+        .btn-primary {
+            background-image: linear-gradient(to right, #e94560, #ff8c42);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+        }
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(233, 69, 96, 0.6);
+        }
+        .btn-secondary {
+            background-color: #383838;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        .btn-secondary:hover {
+            background-color: #555;
+            transform: translateY(-2px);
+        }
+        .input-field {
+            background-color: #222;
+            border: 1px solid #444;
+            color: #E0E0E0;
+            border-radius: 12px;
+            padding: 1rem;
+            width: 100%;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #ff8c42;
+            box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.3);
+        }
+        .countdown {
+            font-family: 'Bungee', cursive;
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #ff8c42;
+            animation: pulse-timer 1s infinite;
+        }
+        @keyframes pulse-timer {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); color: #e94560; }
+        }
+        .podium-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            margin: 0 1.5rem;
+            color: #121212;
+            font-weight: bold;
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+        .podium-item .trophy {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+        }
+        .podium-item .name {
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+            font-weight: 700;
+        }
+        .podium-item .score {
+            font-size: 1.5rem;
+            font-weight: 900;
+            font-family: 'Bungee', cursive;
+            margin-bottom: 1rem;
+        }
+        .podium-gold { height: 180px; background-image: linear-gradient(to bottom, #FFD700, #DAA520); }
+        .podium-silver { height: 140px; background-image: linear-gradient(to bottom, #C0C0C0, #808080); }
+        .podium-bronze { height: 100px; background-image: linear-gradient(to bottom, #CD7F32, #8B4513); }
+        .category-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        .category-icon {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+        }
+        .list-disc {
+            list-style-type: disc;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 p-8">
+    <div class="container mx-auto">
+        <h1 class="text-4xl text-center mb-2">The Alphabet Challenge</h1>
+        <p class="text-center text-gray-400 mb-8 font-inter">A Virtual Icebreaker for Team Turbines Limited</p>
+
+        <!-- Main Game Container -->
+        <div id="game-container" class="card">
+            <!-- Lobby View (Initial Screen) -->
+            <div id="lobby-view" class="">
+                <div class="flex justify-center mb-8">
+                    <svg width="200" height="100" viewBox="0 0 200 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <style>
+                            .bungee-text { font-family: 'Bungee', cursive; font-weight: 700; }
+                            .trophy-emoji { font-size: 30px; }
+                        </style>
+                        <rect x="0" y="0" width="200" height="100" rx="10" ry="10" fill="url(#paint0_linear)"/>
+                        <g transform="translate(10, 10)">
+                            <text x="20" y="55" fill="white" class="bungee-text" font-size="48">A</text>
+                            <text x="70" y="55" fill="white" class="bungee-text" font-size="48">B</text>
+                            <text x="120" y="55" fill="#FFD700" class="trophy-emoji">🏆</text>
+                        </g>
+                        <defs>
+                            <linearGradient id="paint0_linear" x1="0" y1="0" x2="200" y2="100" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#E94560"/>
+                                <stop offset="1" stop-color="#FF8C42"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h2 class="text-2xl text-center mb-6">Game Rules & Categories</h2>
+                <div class="mb-8 font-inter text-gray-300">
+                    <p class="mb-4">Welcome to The Alphabet Challenge! Here's how to play:</p>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li>Each round, a letter will be revealed.</li>
+                        <li>You have 20 seconds to type a word for each of the categories below that starts with that letter.</li>
+                        <li>Points are awarded for accuracy, speed, and uniqueness.</li>
+                    </ul>
+                </div>
+                <div class="mb-8">
+                    <h3 class="text-lg mb-4">Game Categories:</h3>
+                    <div class="category-info">
+                        <span class="category-icon">🗺️</span>
+                        <span><strong>Country</strong></span>
+                    </div>
+                    <div class="category-info">
+                        <span class="category-icon">🎨</span>
+                        <span><strong>Color</strong></span>
+                    </div>
+                    <div class="category-info">
+                        <span class="category-icon">🍔</span>
+                        <span><strong>Food</strong></span>
+                    </div>
+                    <div class="category-info">
+                        <span class="category-icon">🦁</span>
+                        <span><strong>Animal</strong></span>
+                    </div>
+                    <div class="category-info">
+                        <span class="category-icon">💼</span>
+                        <span><strong>Job Title</strong></span>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label for="player-name" class="block text-gray-300 font-semibold mb-2">Enter Your Name to Join:</label>
+                    <input type="text" id="player-name" class="input-field" placeholder="E.g., Jane Doe">
+                </div>
+                <button id="join-game-btn" class="btn-primary w-full">Join Game</button>
+            </div>
+
+            <!-- Waiting Room View -->
+            <div id="waiting-view" class="hidden">
+                <h2 class="text-2xl text-center mb-6 animate-pulse">Waiting for Host to Start...</h2>
+                <div id="player-list" class="space-y-3 mb-8">
+                    <!-- Player list will be dynamically inserted here -->
+                </div>
+                <div id="waiting-host-controls" class="text-center hidden">
+                    <button id="start-round-btn" class="btn-primary">Start New Round</button>
+                    <button id="end-game-btn" class="btn-secondary ml-4">End Game</button>
+                </div>
+            </div>
+
+            <!-- Game View -->
+            <div id="game-view" class="hidden">
+                <div id="host-view" class="host-view card hidden bg-gray-800">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl">Host View 🎤</h2>
+                        <button id="end-round-btn" class="btn-secondary">End Round & Score</button>
+                    </div>
+                    <div id="host-state" class="text-center mb-6">
+                        <div id="current-letter-host" class="text-9xl font-extrabold text-white font-bungee">_</div>
+                        <div id="countdown-host" class="countdown text-3xl mt-4">20</div>
+                    </div>
+                    <div id="submissions-view" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Submissions will be dynamically inserted here -->
+                    </div>
+                </div>
+
+                <div id="player-view" class="player-view card hidden bg-gray-800">
+                    <h2 class="text-2xl text-center mb-6">Player View 🎮</h2>
+                    <div id="current-letter-player" class="text-7xl text-center text-white font-bungee">_</div>
+                    <div id="countdown-player" class="countdown text-2xl text-center mt-4">20</div>
+
+                    <div id="player-inputs" class="space-y-4 my-8">
+                        <div class="category">
+                            <label class="block text-gray-300 font-semibold mb-2">Country:</label>
+                            <input type="text" data-category="country" class="input-field">
+                        </div>
+                        <div class="category">
+                            <label class="block text-gray-300 font-semibold mb-2">Color:</label>
+                            <input type="text" data-category="color" class="input-field">
+                        </div>
+                        <div class="category">
+                            <label class="block text-gray-300 font-semibold mb-2">Food:</label>
+                            <input type="text" data-category="food" class="input-field">
+                        </div>
+                        <div class="category">
+                            <label class="block text-gray-300 font-semibold mb-2">Animal:</label>
+                            <input type="text" data-category="animal" class="input-field">
+                        </div>
+                        <div class="category">
+                            <label class="block text-gray-300 font-semibold mb-2">Job Title:</label>
+                            <input type="text" data-category="jobTitle" class="input-field">
+                        </div>
+                    </div>
+                    <button id="submit-btn" class="btn-primary w-full">Submit Answers</button>
+                </div>
+            </div>
+            
+            <div id="podium-view" class="hidden">
+                <h2 class="text-2xl text-center mb-6">Round Results</h2>
+                <div class="flex justify-center items-end h-64 mb-8">
+                    <div id="podium-2" class="podium-item w-1/4 rounded-t-lg shadow-lg"></div>
+                    <div id="podium-1" class="podium-item w-1/4 rounded-t-lg shadow-lg"></div>
+                    <div id="podium-3" class="podium-item w-1/4 rounded-t-lg shadow-lg"></div>
+                </div>
+            </div>
+
+            <div id="scoreboard-view" class="card hidden">
+                <h2 class="text-2xl text-center mb-4">Scoreboard</h2>
+                <div id="scoreboard-list" class="space-y-3">
+                    <!-- Scoreboard will be dynamically inserted here -->
+                </div>
+                <div id="podium-controls" class="text-center mt-6 hidden">
+                    <button id="next-round-btn" class="btn-primary">Next Round</button>
+                    <button id="end-game-btn-final" class="btn-secondary ml-4">End Game</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase Global Variables (Canvas-provided)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, auth, db, userId;
+        let gameDocRef;
+        let isHost = false;
+        let timerInterval;
+        let gameData = {};
+        
+        const lobbyView = document.getElementById('lobby-view');
+        const waitingView = document.getElementById('waiting-view');
+        const playerList = document.getElementById('player-list');
+        const waitingHostControls = document.getElementById('waiting-host-controls');
+        
+        const playerJoinBtn = document.getElementById('join-game-btn');
+        const playerNameInput = document.getElementById('player-name');
+        const gameSetupView = document.getElementById('game-setup-view');
+        const gameView = document.getElementById('game-view');
+        const hostView = document.getElementById('host-view');
+        const playerView = document.getElementById('player-view');
+        const scoreboardView = document.getElementById('scoreboard-view');
+        const scoreboardList = document.getElementById('scoreboard-list');
+        const startRoundBtn = document.getElementById('start-round-btn');
+        const endRoundBtn = document.getElementById('end-round-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const submissionsView = document.getElementById('submissions-view');
+        const podiumView = document.getElementById('podium-view');
+        const nextRoundBtn = document.getElementById('next-round-btn');
+        const endGameBtn = document.getElementById('end-game-btn-final');
+
+        const LETTERS = ['J', 'K', 'N', 'Q', 'U', 'V', 'W', 'X', 'Y', 'Z', 'I', 'P', 'F', 'B', 'G'];
+        const CATEGORIES = ['country', 'color', 'food', 'animal', 'jobTitle'];
+        const CATEGORY_LABELS = {
+            country: 'Country',
+            color: 'Color',
+            food: 'Food',
+            animal: 'Animal',
+            jobTitle: 'Job Title'
+        };
+        const EMOJIS = ['🚀', '🌟', '💡', '✨', '⚡', '💫', '🔥', '🌈', '💎', '👑', '🎉', '🎊', '🏆', '💯', '✅', '✔️'];
+        
+        const CORRECT_ANSWERS = {
+            J: { country: ['japan', 'jamaica', 'jordan'], color: ['jade', 'jet', 'jungle green', 'java'], food: ['jalapeño', 'jelly', 'jollof rice', 'juice', 'jambalaya', 'jerk chicken', 'jam', 'jerk beef'], animal: ['jaguar', 'jellyfish', 'jackal', 'jay', 'jerboa', 'jungle fowl'], jobTitle: ['journalist', 'jockey', 'janitor', 'jeweler', 'judge', 'juggler'] },
+            K: { country: ['kuwait', 'kenya', 'kazakhstan', 'kiribati', 'kosovo', 'kyrgyzstan'], color: ['khaki', 'kelly green', 'kobe'], food: ['kebab', 'kiwi', 'kelewele', 'ketchup', 'kit kat', 'kushiyaki', 'knish', 'kimchi', 'kofta'], animal: ['koala', 'kangaroo', 'kudu', 'kingfisher', 'kookaburra', 'killer whale'], jobTitle: ['kickboxer', 'king', 'kitchen porter', 'kindergarten teacher', 'keymaker', 'knight'] },
+            N: { country: ['nigeria', 'norway', 'nepal', 'netherlands', 'nicaragua', 'namibia', 'nauru', 'new zealand'], color: ['navy', 'neon', 'nude', 'nutmeg'], food: ['nachos', 'noodles', 'nutella', 'nuts', 'naan', 'nuggets', 'natto'], animal: ['narwhal', 'newt', 'nightingale', 'numbat', 'nighthawk'], jobTitle: ['nurse', 'novelist', 'navigator', 'nutritionist', 'neurologist', 'negotiator'] },
+            Q: { country: ['qatar'], color: ['quicksilver'], food: ['quiche', 'queso', 'quinoa', 'quince', 'quark'], animal: ['quail', 'quetzal', 'quokka'], jobTitle: ['quality assurance analyst', 'quarterback', 'quantum physicist', 'quarryman', 'queen'] },
+            U: { country: ['uruguay', 'uganda', 'ukraine', 'united kingdom', 'united states', 'uzbekistan'], color: ['ultramarine', 'umber', 'unbleached silk'], food: ['udon', 'uni', 'upma'], animal: ['urchin', 'uakari', 'unau'], jobTitle: ['urban planner', 'usurer', 'undertaker', 'usher', 'urologist'] },
+            V: { country: ['venezuela', 'vietnam', 'vatican city'], color: ['vermilion', 'violet', 'viridian', 'vanilla'], food: ['vanilla', 'veal', 'vada', 'vegetables', 'venison'], animal: ['vulture', 'vole', 'vampire bat', 'viper'], jobTitle: ['veterinarian', 'vice president', 'vintner', 'valet'] },
+            W: { country: ['wales', 'western sahara'], color: ['white', 'wenge', 'wine'], food: ['waffles', 'walnuts', 'wonton', 'watermelon', 'whipped cream'], animal: ['walrus', 'weasel', 'wombat', 'wolf', 'woodpecker'], jobTitle: ['web developer', 'writer', 'welder', 'waiter', 'warden', 'watchmaker'] },
+            X: { country: ['mexico'], color: ['xanadu'], food: ['xacuti', 'xouba', 'xoi'], animal: ['xenops', 'x-ray tetra'], jobTitle: ['x-ray technician'] },
+            Y: { country: ['yemen'], color: ['yellow', 'yam'], food: ['yogurt', 'yam', 'yaki udon', 'yorkshire pudding'], animal: ['yak', 'yorkshire terrier'], jobTitle: ['yoga instructor', 'yacht captain', 'yardmaster'] },
+            Z: { country: ['zambia', 'zimbabwe'], color: ['zomp', 'zinc', 'zinnia'], food: ['ziti', 'zucchini', 'za\'atar'], animal: ['zebra', 'zebu'], jobTitle: ['zookeeper', 'zitherist'] },
+            I: { country: ['iceland', 'india', 'indonesia', 'iran', 'iraq', 'ireland', 'israel', 'italy'], color: ['indigo', 'ivory', 'ice blue'], food: ['ice cream', 'italian sausage', 'idli', 'injera'], animal: ['iguana', 'impala', 'ibex'], jobTitle: ['interior designer', 'illustrator', 'investment banker', 'inventor'] },
+            P: { country: ['peru', 'portugal', 'pakistan', 'panama', 'poland', 'philippines'], color: ['pink', 'purple', 'periwinkle', 'persian rose'], food: ['pasta', 'pizza', 'papaya', 'pie', 'plantain'], animal: ['penguin', 'panda', 'parrot', 'pig', 'panther'], jobTitle: ['plumber', 'president', 'pilot', 'programmer', 'pharmacist', 'pastor'] },
+            F: { country: ['france', 'finland', 'fiji'], color: ['fuchsia', 'forest green', 'fern'], food: ['falafel', 'fries', 'fufu', 'fish', 'fajitas', 'fettuccine', 'flan'], animal: ['falcon', 'fox', 'ferret', 'flamingo', 'frog'], jobTitle: ['firefighter', 'farmer', 'florist', 'foreman', 'framer'] },
+            B: { country: ['brazil', 'belgium', 'botswana', 'bangladesh', 'benin', 'bulgaria'], color: ['blue', 'brown', 'beige', 'burgundy', 'bronze', 'bisque'], food: ['burrito', 'bread', 'bofrot', 'banku', 'beans', 'burger'], animal: ['bear', 'beaver', 'buffalo', 'badger', 'bison', 'baboon'], jobTitle: ['biologist', 'baker', 'barista', 'bus driver', 'blacksmith'] },
+            G: { country: ['germany', 'greece', 'ghana', 'guinea', 'georgia', 'gabon'], color: ['green', 'gold', 'gray', 'garnet', 'ginger'], food: ['gyro', 'grapes', 'gari', 'groundnut soup', 'gnocchi', 'goulash'], animal: ['giraffe', 'gorilla', 'goose', 'gazelle', 'gnu'], jobTitle: ['geologist', 'gardener', 'graphic designer', 'governor', 'guide'] },
+        };
+
+        const initializeFirebase = async () => {
+            try {
+                if (Object.keys(firebaseConfig).length === 0) {
+                    console.error("Firebase config is missing. Cannot initialize Firestore.");
+                    return;
+                }
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        gameDocRef = doc(db, `artifacts/${appId}/public/data/alphabet-game`, 'main-game');
+
+                        // Check if the game document exists. If not, this user is the host.
+                        const docSnap = await getDoc(gameDocRef);
+                        if (!docSnap.exists() || docSnap.data().players.length === 0) {
+                            isHost = true;
+                            await setDoc(gameDocRef, {
+                                status: 'lobby',
+                                players: [],
+                                currentLetter: null,
+                                roundStartTime: null,
+                                submissions: {},
+                            });
+                        }
+
+                        onSnapshot(gameDocRef, (docSnap) => {
+                            gameData = docSnap.data() || {};
+                            updateGameUI(gameData);
+                        }, (error) => {
+                            console.error("Error listening to game data:", error);
+                        });
+                        console.log("Firebase initialized and user authenticated.");
+                    } else {
+                        console.log("User is signed out.");
+                    }
+                });
+
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Error during Firebase initialization:", error);
+            }
+        };
+
+        const updateGameUI = (data) => {
+            if (!data) return;
+            
+            const currentStatus = data.status;
+
+            lobbyView.classList.toggle('hidden', currentStatus !== 'lobby');
+            waitingView.classList.toggle('hidden', currentStatus !== 'waiting');
+            gameView.classList.toggle('hidden', currentStatus !== 'in-progress');
+            podiumView.classList.toggle('hidden', currentStatus !== 'scoring');
+            scoreboardView.classList.toggle('hidden', currentStatus === 'lobby' || currentStatus === 'waiting');
+            document.getElementById('podium-controls').classList.toggle('hidden', currentStatus !== 'scoring');
+
+            if (currentStatus === 'lobby') {
+                return;
+            }
+
+            if (currentStatus === 'waiting') {
+                 renderPlayerList(data.players);
+                 if(isHost) {
+                    waitingHostControls.classList.remove('hidden');
+                 }
+                 return;
+            }
+
+            // Determine and show the correct view for the game in progress
+            if (isHost) {
+                hostView.classList.remove('hidden');
+                playerView.classList.add('hidden');
+            } else {
+                playerView.classList.remove('hidden');
+                hostView.classList.add('hidden');
+            }
+            
+            // Update host view elements
+            document.getElementById('current-letter-host').textContent = data.currentLetter || '_';
+            renderSubmissions(data.submissions);
+
+            // Update player view elements
+            document.getElementById('current-letter-player').textContent = data.currentLetter || '_';
+            const inputs = playerView.querySelectorAll('.input-field');
+            const submitBtnElement = document.getElementById('submit-btn');
+            inputs.forEach(input => input.disabled = currentStatus !== 'in-progress');
+            submitBtnElement.disabled = currentStatus !== 'in-progress';
+
+            // Update scoreboard
+            renderScoreboard(data.players);
+
+            // Update podium
+            if (currentStatus === 'scoring') {
+                renderPodium(data.players);
+            }
+
+            // Update timer
+            clearInterval(timerInterval);
+            if (currentStatus === 'in-progress' && data.roundStartTime) {
+                timerInterval = setInterval(() => {
+                    const elapsedTime = (Date.now() - data.roundStartTime) / 1000;
+                    const remainingTime = Math.max(0, 20 - Math.floor(elapsedTime));
+                    document.getElementById('countdown-host').textContent = remainingTime;
+                    document.getElementById('countdown-player').textContent = remainingTime;
+                    if (remainingTime <= 0 && isHost) {
+                        clearInterval(timerInterval);
+                        scoreSubmissions();
+                    }
+                }, 1000);
+            } else {
+                document.getElementById('countdown-host').textContent = 20;
+                document.getElementById('countdown-player').textContent = 20;
+            }
+        };
+
+        const renderPlayerList = (players) => {
+            playerList.innerHTML = '';
+            if (!players) return;
+            players.forEach(player => {
+                const playerItem = document.createElement('div');
+                const emoji = EMOJIS[player.name.length % EMOJIS.length];
+                playerItem.className = 'flex items-center p-3 bg-gray-700 rounded-lg shadow-md';
+                playerItem.innerHTML = `<div class="font-medium text-gray-200">${emoji} ${player.name}</div>`;
+                playerList.appendChild(playerItem);
+            });
+        };
+
+        const renderSubmissions = (submissions) => {
+            submissionsView.innerHTML = '';
+            if (!submissions) return;
+
+            for (const playerId in submissions) {
+                const playerSubmission = submissions[playerId];
+                const submissionCard = document.createElement('div');
+                submissionCard.className = 'bg-gray-800 rounded-lg p-4 border border-gray-700';
+                
+                let answersHtml = '';
+                for (const category in playerSubmission.answers) {
+                    const answer = playerSubmission.answers[category];
+                    const isCorrect = isHost && isAnswerCorrect(gameData.currentLetter, category, answer);
+                    const color = isCorrect ? 'text-green-400' : 'text-gray-300';
+                    answersHtml += `<div class="mb-2">
+                        <span class="font-bold text-gray-400">${CATEGORY_LABELS[category]}:</span>
+                        <span class="${color}">${answer}</span>
+                        ${isCorrect ? '✅' : ''}
+                    </div>`;
+                }
+
+                submissionCard.innerHTML = `
+                    <h3 class="font-bold text-lg mb-2 text-white">${playerSubmission.playerName}</h3>
+                    ${answersHtml}
+                `;
+                submissionsView.appendChild(submissionCard);
+            }
+        };
+
+        const renderScoreboard = (players) => {
+            scoreboardList.innerHTML = '';
+            if (!players) return;
+
+            players.sort((a, b) => b.score - a.score);
+
+            players.forEach((player, index) => {
+                const playerItem = document.createElement('div');
+                const emoji = EMOJIS[index % EMOJIS.length];
+                playerItem.className = 'flex justify-between items-center p-4 bg-gray-700 rounded-lg shadow-md';
+                playerItem.innerHTML = `
+                    <div class="font-bold text-lg flex items-center">
+                        <span class="mr-2">${index + 1}.</span>
+                        ${emoji} <span class="ml-2">${player.name}</span>
+                    </div>
+                    <div class="font-bungee text-2xl text-white">${player.score}</div>
+                `;
+                scoreboardList.appendChild(playerItem);
+            });
+        };
+
+        const renderPodium = (players) => {
+            const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+            const podiumPositions = [
+                { id: 'podium-1', player: sortedPlayers[0], class: 'podium-gold', rank: '🏆' },
+                { id: 'podium-2', player: sortedPlayers[1], class: 'podium-silver', rank: '🥈' },
+                { id: 'podium-3', player: sortedPlayers[2], class: 'podium-bronze', rank: '🥉' }
+            ];
+
+            podiumPositions.forEach(pos => {
+                const podiumElement = document.getElementById(pos.id);
+                podiumElement.innerHTML = '';
+                if (pos.player) {
+                    const emoji = EMOJIS[players.findIndex(p => p.id === pos.player.id) % EMOJIS.length];
+                    podiumElement.innerHTML = `
+                        <div class="trophy">${pos.rank}</div>
+                        <div class="name text-gray-900">${emoji} ${pos.player.name}</div>
+                        <div class="score text-gray-900 font-bungee">${pos.player.score}</div>
+                    `;
+                    podiumElement.className = `podium-item flex justify-center items-center rounded-t-lg shadow-2xl ${pos.class} transition-all duration-500 transform`;
+                }
+            });
+        };
+
+        const joinGame = async () => {
+            if (!db || !userId) {
+                console.error("Firestore not initialized or user not authenticated.");
+                return;
+            }
+            const playerName = playerNameInput.value.trim();
+            if (!playerName) return;
+
+            const docSnap = await getDoc(gameDocRef);
+            if (!docSnap.exists() || docSnap.data().players.length === 0) {
+                isHost = true;
+                await setDoc(gameDocRef, {
+                    status: 'waiting',
+                    players: [{ id: userId, name: playerName, score: 0 }],
+                    currentLetter: null,
+                    roundStartTime: null,
+                    submissions: {},
+                });
+            } else {
+                const existingPlayer = docSnap.data().players.find(p => p.id === userId);
+                if (!existingPlayer) {
+                    await updateDoc(gameDocRef, {
+                        players: arrayUnion({ id: userId, name: playerName, score: 0 })
+                    });
+                }
+                 await updateDoc(gameDocRef, {
+                    status: 'waiting'
+                });
+            }
+        };
+
+        const startRound = async () => {
+            if (!isHost || !db) return;
+            podiumView.classList.add('hidden');
+            scoreboardView.classList.add('hidden');
+            const randomLetter = LETTERS[Math.floor(Math.random() * LETTERS.length)];
+            const now = Date.now();
+            await updateDoc(gameDocRef, {
+                currentLetter: randomLetter,
+                status: 'in-progress',
+                roundStartTime: now,
+                submissions: {}
+            });
+        };
+
+        const isAnswerCorrect = (letter, category, answer) => {
+            if (!answer || !letter || !category) return false;
+            const correctList = CORRECT_ANSWERS[letter] ? CORRECT_ANSWERS[letter][category] : [];
+            return correctList.some(correctAnswer => correctAnswer.toLowerCase() === answer.toLowerCase());
+        };
+
+        const scoreSubmissions = async () => {
+            if (!isHost || !gameData) return;
+            const updatedPlayers = [...gameData.players];
+            const submissions = gameData.submissions || {};
+
+            const submissionTimes = {};
+            const uniqueAnswers = {};
+            for (const playerId in submissions) {
+                const playerSubmission = submissions[playerId];
+                for (const category in playerSubmission.answers) {
+                    const answer = playerSubmission.answers[category].toLowerCase();
+                    if (isAnswerCorrect(gameData.currentLetter, category, answer)) {
+                        if (!submissionTimes[category]) {
+                            submissionTimes[category] = playerId;
+                        }
+                        if (!uniqueAnswers[category]) {
+                            uniqueAnswers[category] = {};
+                        }
+                        uniqueAnswers[category][answer] = (uniqueAnswers[category][answer] || 0) + 1;
+                    }
+                }
+            }
+
+            for (const playerId in submissions) {
+                const playerSubmission = submissions[playerId];
+                let roundScore = 0;
+                for (const category in playerSubmission.answers) {
+                    const answer = playerSubmission.answers[category].toLowerCase();
+                    if (isAnswerCorrect(gameData.currentLetter, category, answer)) {
+                        roundScore += 1;
+                        if (submissionTimes[category] === playerId) {
+                            roundScore += 2;
+                        }
+                        if (uniqueAnswers[category] && uniqueAnswers[category][answer] === 1) {
+                            roundScore += 3;
+                        }
+                    }
+                }
+
+                const playerIndex = updatedPlayers.findIndex(p => p.id === playerId);
+                if (playerIndex !== -1) {
+                    updatedPlayers[playerIndex].score += roundScore;
+                }
+            }
+
+            await updateDoc(gameDocRef, {
+                status: 'scoring',
+                players: updatedPlayers
+            });
+        };
+        
+        const submitAnswers = async () => {
+            const inputs = playerView.querySelectorAll('.input-field');
+            const answers = {};
+            inputs.forEach(input => {
+                const category = input.dataset.category;
+                answers[category] = input.value.trim();
+                input.value = '';
+            });
+
+            const submission = {
+                playerName: playerNameInput.value.trim(),
+                answers: answers
+            };
+
+            await updateDoc(gameDocRef, {
+                [`submissions.${userId}`]: submission,
+            });
+        };
+        
+        const endGame = async () => {
+             if (!isHost || !db) return;
+             await updateDoc(gameDocRef, {
+                 status: 'lobby',
+                 currentLetter: null,
+                 roundStartTime: null,
+                 submissions: {},
+                 players: []
+             });
+        };
+
+        const nextRound = async () => {
+             if (!isHost || !db) return;
+             await updateDoc(gameDocRef, {
+                 status: 'waiting',
+                 currentLetter: null,
+                 roundStartTime: null,
+                 submissions: {},
+             });
+        };
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', initializeFirebase);
+        playerJoinBtn.addEventListener('click', joinGame);
+        startRoundBtn.addEventListener('click', startRound);
+        endRoundBtn.addEventListener('click', scoreSubmissions);
+        endGameBtn.addEventListener('click', endGame);
+        nextRoundBtn.addEventListener('click', nextRound);
+    </script>
+</body>
+</html>
