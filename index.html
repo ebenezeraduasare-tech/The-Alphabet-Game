@@ -138,7 +138,9 @@
         <h1 class="text-4xl text-center mb-2">The Alphabet Challenge</h1>
         <p class="text-center text-gray-400 mb-8 font-inter">A Virtual Icebreaker for Team Turbines Limited</p>
 
+        <!-- Main Game Container -->
         <div id="game-container" class="card">
+            <!-- Lobby View (Initial Screen) -->
             <div id="lobby-view" class="">
                 <div class="flex justify-center mb-8">
                     <svg width="200" height="100" viewBox="0 0 200 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -199,16 +201,19 @@
                 <button id="join-game-btn" class="btn-primary w-full">Join Game</button>
             </div>
 
+            <!-- Waiting Room View -->
             <div id="waiting-view" class="hidden">
                 <h2 class="text-2xl text-center mb-6 animate-pulse">Waiting for Host to Start...</h2>
                 <div id="player-list" class="space-y-3 mb-8">
-                    </div>
+                    <!-- Player list will be dynamically inserted here -->
+                </div>
                 <div id="waiting-host-controls" class="text-center hidden">
                     <button id="start-round-btn" class="btn-primary">Start New Round</button>
                     <button id="end-game-btn" class="btn-secondary ml-4">End Game</button>
                 </div>
             </div>
 
+            <!-- Game View -->
             <div id="game-view" class="hidden">
                 <div id="host-view" class="host-view card hidden bg-gray-800">
                     <div class="flex justify-between items-center mb-6">
@@ -220,7 +225,8 @@
                         <div id="countdown-host" class="countdown text-3xl mt-4">20</div>
                     </div>
                     <div id="submissions-view" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        </div>
+                        <!-- Submissions will be dynamically inserted here -->
+                    </div>
                 </div>
 
                 <div id="player-view" class="player-view card hidden bg-gray-800">
@@ -253,7 +259,7 @@
                     <button id="submit-btn" class="btn-primary w-full">Submit Answers</button>
                 </div>
             </div>
-           
+            
             <div id="podium-view" class="hidden">
                 <h2 class="text-2xl text-center mb-6">Round Results</h2>
                 <div class="flex justify-center items-end h-64 mb-8">
@@ -266,7 +272,8 @@
             <div id="scoreboard-view" class="card hidden">
                 <h2 class="text-2xl text-center mb-4">Scoreboard</h2>
                 <div id="scoreboard-list" class="space-y-3">
-                    </div>
+                    <!-- Scoreboard will be dynamically inserted here -->
+                </div>
                 <div id="podium-controls" class="text-center mt-6 hidden">
                     <button id="next-round-btn" class="btn-primary">Next Round</button>
                     <button id="end-game-btn-final" class="btn-secondary ml-4">End Game</button>
@@ -275,15 +282,30 @@
         </div>
     </div>
 
+    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase Global Variables (Canvas-provided)
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        // =============================================================================================
+        // === IMPORTANT: PASTE YOUR FIREBASE CONFIGURATION HERE =======================================
+        // =============================================================================================
+        // You MUST replace the placeholder values below with the exact config from your Firebase project.
+        // Go to your Firebase console, click on "Web" to get this object.
+       const firebaseConfig = {
+  apiKey: "AIzaSyD3iQOFs_IfiUq_g9LijaXzfW1oyQx0tok",
+  authDomain: "alphabet-21733.firebaseapp.com",
+  projectId: "alphabet-21733",
+  storageBucket: "alphabet-21733.firebasestorage.app",
+  messagingSenderId: "326233903626",
+  appId: "1:326233903626:web:369a52859933ae374285f3"
+};
+        const appId = firebaseConfig.projectId;
+        const initialAuthToken = null;
+        // =============================================================================================
+        // === END OF CONFIGURATION SECTION ============================================================
+        // =============================================================================================
 
         let app, auth, db, userId;
         let gameDocRef;
@@ -344,6 +366,14 @@
         const initializeFirebase = async () => {
             try {
                 if (Object.keys(firebaseConfig).length === 0) {
+                    // Check if placeholder config is used.
+                    if (firebaseConfig.projectId === "alphabet-21733") {
+                        console.error(
+                          "Error: The game is using a placeholder Firebase config. " +
+                          "Please replace it with your own config from the Firebase console to fix the 'auth/configuration-not-found' error."
+                        );
+                        return; // Stop initialization
+                    }
                     console.error("Firebase config is missing. Cannot initialize Firestore.");
                     return;
                 }
@@ -356,7 +386,6 @@
                         userId = user.uid;
                         gameDocRef = doc(db, `artifacts/${appId}/public/data/alphabet-game`, 'main-game');
 
-                        // Check if the game document exists. If not, this user is the host.
                         const docSnap = await getDoc(gameDocRef);
                         if (!docSnap.exists()) {
                             isHost = true;
@@ -587,139 +616,123 @@
         };
 
         const startRound = async () => {
-            if (!isHost) return;
-
-            const nextLetter = LETTERS.splice(Math.floor(Math.random() * LETTERS.length), 1)[0];
+            if (!isHost || !db) return;
+            podiumView.classList.add('hidden');
+            scoreboardView.classList.add('hidden');
+            const randomLetter = LETTERS[Math.floor(Math.random() * LETTERS.length)];
+            const now = Date.now();
             await updateDoc(gameDocRef, {
+                currentLetter: randomLetter,
                 status: 'in-progress',
-                currentLetter: nextLetter,
-                roundStartTime: Date.now(),
+                roundStartTime: now,
                 submissions: {}
             });
         };
 
-        const submitAnswers = async () => {
-            if (!userId) return;
-
-            const answers = {};
-            const inputs = playerView.querySelectorAll('.input-field');
-            inputs.forEach(input => {
-                const category = input.dataset.category;
-                answers[category] = input.value.trim().toLowerCase();
-            });
-            
-            // Check if any answers are empty.
-            if (Object.values(answers).some(answer => answer === '')) {
-                alert('Please fill out all categories before submitting.');
-                return;
-            }
-
-            const docSnap = await getDoc(gameDocRef);
-            const gameData = docSnap.data();
-
-            const submission = {
-                playerName: gameData.players.find(p => p.id === userId).name,
-                answers: answers,
-                timestamp: Date.now()
-            };
-
-            await updateDoc(gameDocRef, {
-                [`submissions.${userId}`]: submission,
-            });
-
-            // Visually disable inputs after submission
-            inputs.forEach(input => input.disabled = true);
-            document.getElementById('submit-btn').disabled = true;
+        const isAnswerCorrect = (letter, category, answer) => {
+            if (!answer || !letter || !category) return false;
+            const correctList = CORRECT_ANSWERS[letter] ? CORRECT_ANSWERS[letter][category] : [];
+            return correctList.some(correctAnswer => correctAnswer.toLowerCase() === answer.toLowerCase());
         };
 
         const scoreSubmissions = async () => {
-            if (!isHost) return;
-            
-            const docSnap = await getDoc(gameDocRef);
-            const gameData = docSnap.data();
-            const { players, submissions, currentLetter } = gameData;
-            
-            const updatedPlayers = players.map(player => ({ ...player })); // Create a deep copy
-            const uniqueAnswers = {};
+            if (!isHost || !gameData) return;
+            const updatedPlayers = [...gameData.players];
+            const submissions = gameData.submissions || {};
 
-            // Determine unique answers
-            for (const category of CATEGORIES) {
-                const allAnswers = Object.values(submissions)
-                    .map(sub => sub.answers[category])
-                    .filter(answer => answer);
-                
-                uniqueAnswers[category] = allAnswers.filter(answer => 
-                    allAnswers.indexOf(answer) === allAnswers.lastIndexOf(answer));
+            const submissionTimes = {};
+            const uniqueAnswers = {};
+            for (const playerId in submissions) {
+                const playerSubmission = submissions[playerId];
+                for (const category in playerSubmission.answers) {
+                    const answer = playerSubmission.answers[category].toLowerCase();
+                    if (isAnswerCorrect(gameData.currentLetter, category, answer)) {
+                        if (!submissionTimes[category]) {
+                            submissionTimes[category] = playerId;
+                        }
+                        if (!uniqueAnswers[category]) {
+                            uniqueAnswers[category] = {};
+                        }
+                        uniqueAnswers[category][answer] = (uniqueAnswers[category][answer] || 0) + 1;
+                    }
+                }
             }
 
-            // Calculate points for each player
             for (const playerId in submissions) {
                 const playerSubmission = submissions[playerId];
                 let roundScore = 0;
-                let playerIndex = updatedPlayers.findIndex(p => p.id === playerId);
-                if (playerIndex === -1) continue;
-
-                for (const category of CATEGORIES) {
-                    const answer = playerSubmission.answers[category];
-                    if (isAnswerCorrect(currentLetter, category, answer)) {
-                        roundScore += 5; // Base points for a correct answer
-                        if (uniqueAnswers[category].includes(answer)) {
-                            roundScore += 5; // Bonus points for a unique answer
+                for (const category in playerSubmission.answers) {
+                    const answer = playerSubmission.answers[category].toLowerCase();
+                    if (isAnswerCorrect(gameData.currentLetter, category, answer)) {
+                        roundScore += 1;
+                        if (submissionTimes[category] === playerId) {
+                            roundScore += 2;
+                        }
+                        if (uniqueAnswers[category] && uniqueAnswers[category][answer] === 1) {
+                            roundScore += 3;
                         }
                     }
                 }
-                
-                updatedPlayers[playerIndex].score += roundScore;
+
+                const playerIndex = updatedPlayers.findIndex(p => p.id === playerId);
+                if (playerIndex !== -1) {
+                    updatedPlayers[playerIndex].score += roundScore;
+                }
             }
-            
+
             await updateDoc(gameDocRef, {
                 status: 'scoring',
                 players: updatedPlayers
             });
         };
+        
+        const submitAnswers = async () => {
+            const inputs = playerView.querySelectorAll('.input-field');
+            const answers = {};
+            inputs.forEach(input => {
+                const category = input.dataset.category;
+                answers[category] = input.value.trim();
+                input.value = '';
+            });
 
-        const isAnswerCorrect = (letter, category, answer) => {
-            if (!answer) return false;
-            const letterAnswers = CORRECT_ANSWERS[letter];
-            const categoryAnswers = letterAnswers ? letterAnswers[category] : null;
-            if (!categoryAnswers) return false;
-            return categoryAnswers.includes(answer.toLowerCase());
+            const submission = {
+                playerName: playerNameInput.value.trim(),
+                answers: answers
+            };
+
+            await updateDoc(gameDocRef, {
+                [`submissions.${userId}`]: submission,
+            });
+        };
+        
+        const endGame = async () => {
+             if (!isHost || !db) return;
+             await updateDoc(gameDocRef, {
+                 status: 'lobby',
+                 currentLetter: null,
+                 roundStartTime: null,
+                 submissions: {},
+                 players: []
+             });
         };
 
-        const resetGame = async () => {
-             if (!isHost) return;
-            await setDoc(gameDocRef, {
-                status: 'lobby',
-                players: [],
-                currentLetter: null,
-                roundStartTime: null,
-                submissions: {},
-            });
+        const nextRound = async () => {
+             if (!isHost || !db) return;
+             await updateDoc(gameDocRef, {
+                 status: 'waiting',
+                 currentLetter: null,
+                 roundStartTime: null,
+                 submissions: {},
+             });
         };
 
         // Event Listeners
+        document.addEventListener('DOMContentLoaded', initializeFirebase);
         playerJoinBtn.addEventListener('click', joinGame);
-        playerNameInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') joinGame();
-        });
         startRoundBtn.addEventListener('click', startRound);
-        submitBtn.addEventListener('click', submitAnswers);
         endRoundBtn.addEventListener('click', scoreSubmissions);
-        nextRoundBtn.addEventListener('click', startRound);
-        endGameBtn.addEventListener('click', resetGame);
-        document.getElementById('end-game-btn').addEventListener('click', resetGame);
-
-        // Initialize the application
-        initializeFirebase();
+        endGameBtn.addEventListener('click', endGame);
+        nextRoundBtn.addEventListener('click', nextRound);
     </script>
 </body>
 </html>
-const firebaseConfig = {
-  apiKey: "AIzaSyD3iQOFs_IfiUq_g9LijaXzfW1oyQx0tok",
-  authDomain: "alphabet-21733.firebaseapp.com",
-  projectId: "alphabet-21733",
-  storageBucket: "alphabet-21733.firebasestorage.app",
-  messagingSenderId: "326233903626",
-  appId: "1:326233903626:web:369a52859933ae374285f3"
-};
-
